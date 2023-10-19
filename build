@@ -2,4 +2,4 @@
 
 set -e
 
-gcc -Wall -Wextra -pedantic -o midpoint midpoint.c
+clang -Wall -Wextra -pedantic -o midpoint midpoint.c

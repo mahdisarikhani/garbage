@@ -1,8 +1,7 @@
+#include <SDL2/SDL.h>
 #include <math.h>
 #include <stdbool.h>
 #include <stdlib.h>
-
-#include <SDL2/SDL.h>
 
 #include "color.h"
 
@@ -10,45 +9,39 @@ typedef struct {
     double x, y;
 } point_t;
 
-point_t to_complex_space(size_t x, size_t y, size_t width, size_t height)
-{
+point_t to_complex_space(size_t x, size_t y, size_t width, size_t height) {
     size_t scale = (width < height) ? width : height;
     size_t xoffset = (width - scale) / 2;
     size_t yoffset = (height - scale) / 2;
-    point_t p = {
-        .x = (double)(x - xoffset) / (double)scale * 4.0 - 2.0,
-        .y = (double)(y - yoffset) / (double)scale * 4.0 - 2.0
-    };
+    point_t p = {.x = (double)(x - xoffset) / (double)scale * 4.0 - 2.0,
+                 .y = (double)(y - yoffset) / (double)scale * 4.0 - 2.0};
     return p;
 }
 
-size_t julia_set(point_t p, point_t c, size_t max_iteration)
-{
-    size_t iteration = 0;
-    while (p.x * p.x + p.y * p.y <= 4.0 && iteration < max_iteration) {
+size_t julia_set(point_t p, point_t c, size_t max_iter) {
+    size_t iter = 0;
+    while (p.x * p.x + p.y * p.y <= 4.0 && iter < max_iter) {
         double xtemp = p.x * p.x - p.y * p.y + c.x;
         p.y = 2.0 * p.x * p.y + c.y;
         p.x = xtemp;
-        iteration++;
+        iter++;
     }
-    return iteration;
+    return iter;
 }
 
-void draw_julia_set(SDL_Renderer *renderer, point_t c, size_t width, size_t height, size_t max_iteration, RGB_t *colormap)
-{
+void draw_julia_set(SDL_Renderer *renderer, point_t c, size_t width, size_t height, size_t max_iter, RGB_t *colormap) {
     for (size_t i = 0; i < width; i++) {
         for (size_t j = 0; j < height; j++) {
             point_t p = to_complex_space(i, j, width, height);
-            size_t iteration = julia_set(p, c, max_iteration);
-            RGB_t color = colormap[iteration];
+            size_t iter = julia_set(p, c, max_iter);
+            RGB_t color = colormap[iter];
             SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 255);
             SDL_RenderDrawPoint(renderer, i, j);
         }
     }
 }
 
-int main()
-{
+int main(void) {
     const size_t WIN_WIDTH = 1024;
     const size_t WIN_HEIGHT = 1024;
     const size_t WIDTH = 512;

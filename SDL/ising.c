@@ -24,39 +24,30 @@ typedef struct {
     double specific_heat;
 } properties_t;
 
-double drand(void)
-{
-    return (double)rand() / (double)RAND_MAX;
-}
+double drand(void) { return (double)rand() / (double)RAND_MAX; }
 
-void initialize(int8_t *lattice, size_t num)
-{
+void initialize(int8_t *lattice, size_t num) {
     for (size_t i = 0; i < num; i++) {
         lattice[i] = (rand() % 2) * 2 - 1;
     }
 }
 
-neighbours_t get_neighbours(size_t i, size_t rows, size_t cols)
-{
+neighbours_t get_neighbours(size_t i, size_t rows, size_t cols) {
     size_t num = rows * cols;
-    neighbours_t nbrs = {
-        .left = (i % cols == 0) ? i - 1 + cols : i - 1,
-        .right = ((i + 1) % cols == 0) ? i + 1 - cols : i + 1,
-        .up = (i < cols) ? num + i - cols : i - cols,
-        .down = (i + cols > num) ? (i % cols) : i + cols
-    };
-    return nbrs;
+    neighbours_t nbr = {.left = (i % cols == 0) ? i - 1 + cols : i - 1,
+                        .right = ((i + 1) % cols == 0) ? i + 1 - cols : i + 1,
+                        .up = (i < cols) ? num + i - cols : i - cols,
+                        .down = (i + cols > num) ? (i % cols) : i + cols};
+    return nbr;
 }
 
-int8_t calc_energy(size_t i, int8_t *lattice, size_t rows, size_t cols)
-{
-    neighbours_t nbrs = get_neighbours(i, rows, cols);
-    int8_t energy = -1 * lattice[i] * (lattice[nbrs.left] + lattice[nbrs.right] + lattice[nbrs.up] + lattice[nbrs.down]);
+int8_t calc_energy(size_t i, int8_t *lattice, size_t rows, size_t cols) {
+    neighbours_t nbr = get_neighbours(i, rows, cols);
+    int8_t energy = -1 * lattice[i] * (lattice[nbr.left] + lattice[nbr.right] + lattice[nbr.up] + lattice[nbr.down]);
     return energy;
 }
 
-void update(int8_t *lattice, size_t rows, size_t cols, double beta)
-{
+void update(int8_t *lattice, size_t rows, size_t cols, double beta) {
     size_t i = rand() % (rows * cols);
     int8_t energy = calc_energy(i, lattice, rows, cols);
     double delta_energy = -2.0 * energy;
@@ -65,8 +56,7 @@ void update(int8_t *lattice, size_t rows, size_t cols, double beta)
     }
 }
 
-properties_t get_properties(int8_t *lattice, size_t rows, size_t cols, double beta)
-{
+properties_t get_properties(int8_t *lattice, size_t rows, size_t cols, double beta) {
     size_t num = rows * cols;
     double energy_total = 0.0;
     double energy_squared = 0.0;
@@ -80,17 +70,14 @@ properties_t get_properties(int8_t *lattice, size_t rows, size_t cols, double be
     energy_total /= num;
     energy_squared /= num;
     magnetization /= num;
-    properties_t props = {
-        .energy = energy_total,
-        .magnetization = magnetization,
-        .specific_heat = (energy_squared - (energy_total * energy_total)) * (beta * beta)
-    };
+    properties_t props = {.energy = energy_total,
+                          .magnetization = magnetization,
+                          .specific_heat = (energy_squared - (energy_total * energy_total)) * (beta * beta)};
     return props;
 }
 
 #ifdef LIVE_PREVIEW
-void draw_lattice(SDL_Renderer *renderer, int8_t *lattice, size_t rows, size_t cols)
-{
+void draw_lattice(SDL_Renderer *renderer, int8_t *lattice, size_t rows, size_t cols) {
     for (size_t i = 0; i < cols; i++) {
         for (size_t j = 0; j < rows; j++) {
             uint8_t c = (lattice[i + j * cols] + 1) / 2 * 0xFF;
@@ -101,8 +88,7 @@ void draw_lattice(SDL_Renderer *renderer, int8_t *lattice, size_t rows, size_t c
 }
 #endif
 
-int main()
-{
+int main(void) {
     const size_t ROWS = 128;
     const size_t COLS = 128;
     const size_t NUM = ROWS * COLS;
@@ -149,7 +135,7 @@ int main()
             update(lattice, ROWS, COLS, beta);
         }
         properties_t props = get_properties(lattice, ROWS, COLS, beta);
-        printf("%lu %d %-9.2f %-9.2f %-9.2f\n", counter, (int)props.energy, props.energy, props.magnetization, props.specific_heat);
+        printf("%lu %-9.2f %-9.2f %-9.2f\n", counter, props.energy, props.magnetization, props.specific_heat);
         counter++;
         if (counter > NUM && (int)props.energy <= -4) {
             running = false;

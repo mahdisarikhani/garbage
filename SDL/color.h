@@ -1,9 +1,9 @@
 #ifndef COLOR_H_
 #define COLOR_H_
 
+#include <math.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <math.h>
 
 typedef struct {
     double h;
@@ -17,8 +17,7 @@ typedef struct {
     uint8_t b;
 } RGB_t;
 
-RGB_t hsv2rgb(HSV_t hsv)
-{
+RGB_t hsv2rgb(HSV_t hsv) {
     double c = hsv.v * hsv.s;
     double h = hsv.h * 6;
     double x = c * (1 - fabs(fmod(h, 2) - 1));
@@ -57,21 +56,15 @@ RGB_t hsv2rgb(HSV_t hsv)
     return rgb;
 }
 
-void rainbow(RGB_t *colormap, size_t num, double a, double b)
-{
+void rainbow(RGB_t *colormap, size_t num, double a, double b) {
     for (size_t i = 0; i < num; i++) {
-        HSV_t hsv = {
-            .h = a + ((double)i / (double)(num - 1)) * (b - a),
-            .s = 1,
-            .v = 1
-        };
+        HSV_t hsv = {.h = a + ((double)i / (double)(num - 1)) * (b - a), .s = 1, .v = 1};
         RGB_t rgb = hsv2rgb(hsv);
         colormap[i] = rgb;
     }
 }
 
-void grayscale(RGB_t *colormap, size_t num)
-{
+void grayscale(RGB_t *colormap, size_t num) {
     for (size_t i = 0; i < num; i++) {
         uint8_t c = ((double)i / (double)(num - 1)) * 255;
         RGB_t rgb = {.r = c, .g = c, .b = c};
@@ -79,8 +72,7 @@ void grayscale(RGB_t *colormap, size_t num)
     }
 }
 
-void reverse(RGB_t *colormap, size_t num)
-{
+void reverse(RGB_t *colormap, size_t num) {
     size_t end = num - 1;
     for (size_t i = 0; i < num / 2; i++) {
         RGB_t tmp = colormap[i];

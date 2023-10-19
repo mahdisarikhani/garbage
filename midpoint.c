@@ -7,8 +7,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-void write_ppm_image(uint32_t *pixels, size_t width, size_t height)
-{
+void write_ppm_image(uint32_t *pixels, size_t width, size_t height) {
     FILE *file = fopen("circle.ppm", "w+");
     fprintf(file, "P6 %lu %lu 255\n", width, height);
     for (size_t i = 0; i < width * height; i++) {
@@ -17,8 +16,7 @@ void write_ppm_image(uint32_t *pixels, size_t width, size_t height)
     fclose(file);
 }
 
-void draw_circle(uint32_t *pixels, int width, int height, int radius, uint32_t foreground)
-{
+void draw_circle(uint32_t *pixels, int width, int height, int radius, uint32_t foreground) {
     int x = 0;
     int y = radius;
     int r = radius;
@@ -40,8 +38,7 @@ void draw_circle(uint32_t *pixels, int width, int height, int radius, uint32_t f
     }
 }
 
-void draw_solid_circle(uint32_t *pixels, int width, int height, int radius, uint32_t foreground)
-{
+void draw_solid_circle(uint32_t *pixels, int width, int height, int radius, uint32_t foreground) {
     int x = 0;
     int y = radius;
     int r = radius;
@@ -63,8 +60,7 @@ void draw_solid_circle(uint32_t *pixels, int width, int height, int radius, uint
     }
 }
 
-int main()
-{
+int main(void) {
     const size_t RADIUS = 256;
     const size_t WIDTH = 2 * RADIUS + 1;
     const size_t HEIGHT = 2 * RADIUS + 1;

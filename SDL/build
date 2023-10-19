@@ -2,6 +2,6 @@
 
 set -e
 
-gcc -Wall -Wextra -pedantic -O3 -lm -lSDL2 -o ising ising.c
-gcc -Wall -Wextra -pedantic -O3 -lm -lSDL2 -o julia julia.c color.h
-gcc -Wall -Wextra -pedantic -O3 -lm -lSDL2 -o mandelbrot mandelbrot.c color.h
+clang -Wall -Wextra -pedantic -O3 -lm -lSDL2 -o ising ising.c
+clang -Wall -Wextra -pedantic -O3 -lm -lSDL2 -o julia julia.c
+clang -Wall -Wextra -pedantic -O3 -lm -lSDL2 -o mandelbrot mandelbrot.c
